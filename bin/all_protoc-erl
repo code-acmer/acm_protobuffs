@@ -1,0 +1,15 @@
+#!/usr/bin/env escript
+%% -*- erlang -*-
+%%! -noshell -pa ../ebin
+
+main ([]) ->
+    code:add_patha("../deps/protobuffs/ebin/"),
+    case file:list_dir("../proto") of
+	{ok, List} ->
+	    lists:map(fun(File) ->
+			      protobuffs_compile:generate_source(filename:join("../proto", File), [{imports_dir, ["../proto/"]}, {output_src_dir, "../src/protocol/"}, {output_include_dir, "../include/"}])
+		      end, List);
+	Other ->
+	    io:format("~p~n", [Other])
+    end,
+    halt (1).
